@@ -1,0 +1,20 @@
+#vscode
+.vscode/
+
+# dependencies
+node_modules/
+
+# production
+/build
+/dist
+*.js
+
+# test
+template/src/__tests__/__snapshots__/
+
+# logs
+lerna-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.changelog
