@@ -1,30 +1,59 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useRef, useCallback } from "react";
+import { useAnimation } from "framer-motion";
 
 export const Context = createContext({});
 
+export const effects = {
+  POP_UP: {
+    entering: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
+    exiting: { opacity: 0, scale: 0.7, transition: { duration: 0.4 } },
+    initial: { scale: 0.7 }
+  },
+  SLIDE_IN: {
+    entering: { x: 0, transition: { duration: 0.4 } },
+    exiting: { x: "105%", transition: { duration: 0.4 } },
+    initial: { x: "105%" }
+  }
+};
+
 export default function Provider({ modals, children }) {
+  const ref = useRef();
+
   const [modal, setModal] = useState(null);
+  const [previousModal, setPreviousModal] = useState(null);
+  const [modalEffect, setModalEffect] = useState(null);
   const [props, setProps] = useState({});
   const [disabled, setDisable] = useState();
   const [shouldFade, setShouldFade] = useState(true);
   const [modalTimeout, setModalTimeout] = useState(0);
-  const [modalStyle, setmodalStyle] = useState(null);
+  const [overlay, setOverlay] = useState(false);
 
-  const openModal = (
-    content,
-    { fade = true, timeout = 0, style, ...data } = {}
-  ) => {
-    setShouldFade(fade);
-    setModalTimeout(timeout);
-    setProps(data);
-    setmodalStyle(style);
-    setModal(content);
-  };
+  const modalControls = useAnimation();
+  const openModal = useCallback(
+    (
+      content,
+      {
+        fade = true,
+        timeout = 0,
+        effect = effects.POP_UP,
+        noOverlay = false,
+        ...data
+      } = {}
+    ) => {
+      setShouldFade(fade);
+      setModalTimeout(timeout);
+      setProps(data);
+      setModal(content);
+      setModalEffect(effect);
+      setOverlay(noOverlay);
+    },
+    []
+  );
 
-  const closeModal = ({ fade = true } = {}) => {
+  const closeModal = useCallback(({ fade = true } = {}) => {
     setShouldFade(fade);
     setModal(null);
-  };
+  }, []);
 
   const disable = () => setDisable(true);
   const updateProps = data => setProps(data);
@@ -34,17 +63,25 @@ export default function Provider({ modals, children }) {
     <Context.Provider
       value={{
         modals,
-        modal,
-        disabled,
-        props,
         openModal,
         closeModal,
-        disable,
-        updateProps,
-        shouldFade,
-        modalTimeout,
-        clearModalTimeout,
-        modalStyle
+        effects,
+        sys: {
+          modal,
+          previousModal,
+          setPreviousModal,
+          ref,
+          disabled,
+          props,
+          disable,
+          updateProps,
+          shouldFade,
+          modalTimeout,
+          clearModalTimeout,
+          overlay,
+          modalControls,
+          modalEffect
+        }
       }}
     >
       {children}

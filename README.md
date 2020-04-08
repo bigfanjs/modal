@@ -59,14 +59,16 @@ _Login Modal (common/application/Login.js)_
 
 ```js
 import styled from "styled-components";
+import { Modal } from "oh-my-modal";
 
-const StyledLogin = styled.div`
+const StyledLogin = styled(Modal)`
   background-color: blue;
+  width: 50%;
 `;
 
-export default function Login({ innerRef }) {
+export default function Login() {
   return (
-    <StyledLogin ref={innerRef}>
+    <StyledLogin>
       <div>login modal</div>
     </StyledLogin>
   );

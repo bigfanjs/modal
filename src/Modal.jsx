@@ -1,26 +1,33 @@
-import React, { Children, forwardRef } from "react";
+import React, { useContext } from "react";
+import { motion } from "framer-motion";
+
+import { Context } from "./Provider";
 
 const defaultStyles = {
-  width: "90%",
-  height: "70%",
-  backgroundColor: "#fff",
   position: "relative",
-  borderRadius: "10px",
-  boxShadow: "0px 2px 30px #c5c5c5cc",
-  overflow: "hidden",
   transformOrigin: "center center",
   willChange: "transform",
   pointerEvents: "auto"
 };
 
 export default function Modal({ children, className, style }) {
+  const {
+    sys: { ref, modalControls, modal, setPreviousModal, modalEffect }
+  } = useContext(Context);
+  const handleAnimationEnd = () => !modal && setPreviousModal(null);
+
   return (
-    <div
+    <motion.div
+      ref={ref}
+      animate={modalControls}
+      variants={modalEffect}
+      initial="initial"
+      onAnimationComplete={handleAnimationEnd}
       onClick={e => e.stopPropagation()}
       className={className}
       style={{ ...defaultStyles, ...style }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }

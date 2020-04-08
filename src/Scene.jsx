@@ -1,5 +1,6 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { motion, useAnimation } from "framer-motion";
+// import useActionInsideOut from "./useActionInsideOut";
 
 import { Context } from "./Provider";
 
@@ -13,65 +14,67 @@ const overlayDefaultStyles = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  backgroundColor: "rgba(255, 255, 255, 0.79)",
-  opacity: 0
+  backgroundColor: "rgba(255, 255, 255, 0.79)"
 };
 
 export default function Scene({ modals }) {
   const {
-    modal,
-    modalTimeout,
-    clearModalTimeout,
     closeModal,
-    props,
-    style
+    sys: { modal, previousModal, setPreviousModal, modalControls, overlay }
   } = useContext(Context);
 
   const isMounted = useRef(false);
 
-  const [previousModal, setPreviousModal] = useState(null);
-  const [isPreviousOut, setIsPreviousOut] = useState(false);
-  const [isCurrentOut, setIsCurrentOut] = useState(false);
-  const [timer, setTimer] = useState(false);
-
   const controls = useAnimation();
-
-  const handleAnimationComplete = () => {
-    if (!modal) setPreviousModal(null);
-  };
 
   // handle modal entering/exiting
   useEffect(() => {
-    // if (modal && previousModal) clearTimeout(timer);
-
     if (modal) setPreviousModal(modal);
-    else controls.start({ opacity: 0, transition: { duration: 1 } });
-  }, [modal, controls]);
+    else {
+      controls.start("exiting");
+      modalControls.start("exiting");
+    }
+  }, [modal, controls, modalControls, setPreviousModal]);
 
   useEffect(() => {
     if (isMounted.current) {
-      console.log("FUCK!", previousModal);
       if (previousModal) {
-        controls.start({ opacity: 1, transition: { duration: 1 } });
-      } else {
-        controls.start({ opacity: 0, transition: { duration: 1 } });
+        controls.start("entering");
+        modalControls.start("entering");
       }
     } else isMounted.current = true;
-  }, [previousModal, controls]);
+  }, [previousModal, controls, modalControls]);
+
+  // useActionInsideOut({
+  //   element: ref,
+  //   handler: onMove,
+  //   event: types.MOVE,
+  //   disable: !previousModal || disabled || !modalTimeout,
+  //   runOnload: true
+  // });
+
+  const Modal = modals[previousModal];
+
+  const overlayVariants = {
+    entering: { opacity: 1, transition: { duration: 0.4 } },
+    exiting: { opacity: 0, transition: { duration: 0.4 } },
+    initial: { opacity: 0 }
+  };
 
   return (
     previousModal && (
       <motion.div
-        animate={controls}
-        onAnimationComplete={handleAnimationComplete}
-        style={overlayDefaultStyles}
-        onClick={() => {
-          console.log("pfff!");
-          closeModal();
+        animate={!overlay && controls}
+        initial={!overlay && "initial"}
+        variants={overlayVariants}
+        style={{
+          ...overlayDefaultStyles,
+          ...(overlay ? { backgroundColor: "transparent" } : {})
         }}
+        onClick={closeModal}
         className="overlay"
       >
-        <div />
+        <Modal />
       </motion.div>
     )
   );
