@@ -12,9 +12,8 @@ const defaultStyles = {
 
 export default function Modal({ children, className, style }) {
   const {
-    sys: { ref, modalControls, modal, setPreviousModal, modalEffect }
+    sys: { ref, modalControls, modalEffect }
   } = useContext(Context);
-  const handleAnimationEnd = () => !modal && setPreviousModal(null);
 
   return (
     <motion.div
@@ -22,7 +21,6 @@ export default function Modal({ children, className, style }) {
       animate={modalControls}
       variants={modalEffect}
       initial="initial"
-      onAnimationComplete={handleAnimationEnd}
       onClick={e => e.stopPropagation()}
       className={className}
       style={{ ...defaultStyles, ...style }}

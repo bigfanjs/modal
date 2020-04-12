@@ -26,7 +26,7 @@ export default function Provider({ modals, children }) {
   const [disabled, setDisable] = useState();
   const [shouldFade, setShouldFade] = useState(true);
   const [modalTimeout, setModalTimeout] = useState(0);
-  const [overlay, setOverlay] = useState(false);
+  const [hasNoOverlay, setHasNoOverlay] = useState(false);
 
   const modalControls = useAnimation();
   const openModal = useCallback(
@@ -45,7 +45,7 @@ export default function Provider({ modals, children }) {
       setProps(data);
       setModal(content);
       setModalEffect(effect);
-      setOverlay(noOverlay);
+      setHasNoOverlay(noOverlay);
     },
     []
   );
@@ -78,7 +78,7 @@ export default function Provider({ modals, children }) {
           shouldFade,
           modalTimeout,
           clearModalTimeout,
-          overlay,
+          hasNoOverlay,
           modalControls,
           modalEffect
         }
