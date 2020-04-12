@@ -107,10 +107,7 @@ export default function Scene({ modals }) {
     const bodyStyle = document.body.style;
 
     if (!modalScroll) bodyStyle.overflowY = "hidden";
-
-    return () => {
-      if (!modalScroll) bodyStyle.overflowY = "scroll";
-    };
+    if (!modal && !previousModal) bodyStyle.overflowY = "scroll";
   });
 
   const Modal = modals[previousModal];
