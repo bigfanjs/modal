@@ -27,6 +27,7 @@ export default function Provider({ modals, children }) {
   const [shouldFade, setShouldFade] = useState(true);
   const [modalTimeout, setModalTimeout] = useState(0);
   const [hasNoOverlay, setHasNoOverlay] = useState(false);
+  const [modalScroll, setModalScroll] = useState(false);
 
   const modalControls = useAnimation();
   const openModal = useCallback(
@@ -37,6 +38,7 @@ export default function Provider({ modals, children }) {
         timeout = 0,
         effect = effects.POP_UP,
         noOverlay = false,
+        scroll = false,
         ...data
       } = {}
     ) => {
@@ -46,6 +48,7 @@ export default function Provider({ modals, children }) {
       setModal(content);
       setModalEffect(effect);
       setHasNoOverlay(noOverlay);
+      setModalScroll(scroll);
     },
     []
   );
@@ -80,7 +83,8 @@ export default function Provider({ modals, children }) {
           clearModalTimeout,
           hasNoOverlay,
           modalControls,
-          modalEffect
+          modalEffect,
+          modalScroll
         }
       }}
     >

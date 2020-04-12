@@ -37,6 +37,7 @@ export default function Scene({ modals }) {
       setPreviousModal,
       modalControls,
       hasNoOverlay,
+      modalScroll,
       modalTimeout,
       clearModalTimeout,
       ref
@@ -101,6 +102,16 @@ export default function Scene({ modals }) {
       setTimer(false);
     }
   }, [modalTimeout, handleTimeout, isMouseOut, timer]);
+
+  useEffect(() => {
+    const bodyStyle = document.body.style;
+
+    if (!modalScroll) bodyStyle.overflowY = "hidden";
+
+    return () => {
+      if (!modalScroll) bodyStyle.overflowY = "scroll";
+    };
+  });
 
   const Modal = modals[previousModal];
 
