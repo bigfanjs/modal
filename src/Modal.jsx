@@ -15,12 +15,15 @@ export default function Modal({ children, className, style }) {
     sys: { ref, modalControls, modalEffect }
   } = useContext(Context);
 
+  const modalVariants =
+    modalEffect && modalEffect.modal ? modalEffect.modal : modalEffect;
+
   return (
     <motion.div
       ref={ref}
-      animate={modalControls}
-      variants={modalEffect}
       initial="initial"
+      variants={modalVariants}
+      animate={modalControls}
       onClick={e => e.stopPropagation()}
       className={className}
       style={{ ...defaultStyles, ...style }}

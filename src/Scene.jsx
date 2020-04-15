@@ -3,11 +3,11 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  useCallback
+  useCallback,
+  useMemo
 } from "react";
 import { motion, useAnimation } from "framer-motion";
 import useActionInsideOut, { types } from "./useActionInsideOut";
-
 import { Context } from "./Provider";
 
 const overlayDefaultStyles = {
@@ -20,13 +20,9 @@ const overlayDefaultStyles = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  backgroundColor: "rgba(255, 255, 255, 0.79)"
+  backgroundColor: "rgba(0, 0, 0, 0.79)"
 };
-const overlayVariants = {
-  entering: { opacity: 1, transition: { duration: 0.4 } },
-  exiting: { opacity: 0, transition: { duration: 0.4 } },
-  initial: { opacity: 0 }
-};
+const springConfigs = { type: "spring", stiffness: 90, damping: 13 };
 
 export default function Scene({ modals }) {
   const {
@@ -40,7 +36,11 @@ export default function Scene({ modals }) {
       modalScroll,
       modalTimeout,
       clearModalTimeout,
-      ref
+      ref,
+      duration,
+      isSpring,
+      modalProps,
+      modalEffect
     }
   } = useContext(Context);
 
@@ -54,14 +54,19 @@ export default function Scene({ modals }) {
     if (timer) clearTimeout(timer);
   }, [closeModal, clearModalTimeout, timer]);
 
+  const transition = useMemo(() => ({ duration }), [duration]);
+
   const handleModalEnter = useCallback(() => {
-    if (!hasNoOverlay) controls.start("entering");
-    modalControls.start("entering");
-  }, [hasNoOverlay, modalControls, controls]);
+    if (!hasNoOverlay) controls.start("enter", transition);
+    modalControls.start("enter", {
+      ...transition,
+      ...(isSpring ? springConfigs : {})
+    });
+  }, [hasNoOverlay, modalControls, controls, transition, isSpring]);
 
   const handleModalExit = useCallback(async () => {
-    if (!hasNoOverlay) controls.start("exiting");
-    await modalControls.start("exiting");
+    if (!hasNoOverlay) controls.start("exit", transition);
+    await modalControls.start("exit", transition);
     setPreviousModal(null);
     if (modalTimeout) handleCleanUps();
   }, [
@@ -70,7 +75,8 @@ export default function Scene({ modals }) {
     controls,
     modalTimeout,
     handleCleanUps,
-    setPreviousModal
+    setPreviousModal,
+    transition
   ]);
 
   const handleTimeout = useCallback(
@@ -108,9 +114,11 @@ export default function Scene({ modals }) {
 
     if (!modalScroll) bodyStyle.overflowY = "hidden";
     if (!modal && !previousModal) bodyStyle.overflowY = "scroll";
-  });
+  }, [modal, modalScroll, previousModal]);
 
   const Modal = modals[previousModal];
+  const overlayVariants =
+    modalEffect && modalEffect.overlay ? modalEffect.overlay : modalEffect;
 
   return (
     previousModal && (
@@ -125,7 +133,7 @@ export default function Scene({ modals }) {
         onClick={closeModal}
         className="overlay"
       >
-        <Modal />
+        <Modal {...modalProps} />
       </motion.div>
     )
   );

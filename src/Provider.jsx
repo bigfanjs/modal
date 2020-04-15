@@ -1,20 +1,9 @@
 import React, { createContext, useState, useRef, useCallback } from "react";
 import { useAnimation } from "framer-motion";
 
-export const Context = createContext({});
+import * as effects from "./effects";
 
-export const effects = {
-  POP_UP: {
-    entering: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
-    exiting: { opacity: 0, scale: 0.7, transition: { duration: 0.4 } },
-    initial: { scale: 0.7 }
-  },
-  SLIDE_IN: {
-    entering: { x: 0, transition: { duration: 0.4 } },
-    exiting: { x: "105%", transition: { duration: 0.4 } },
-    initial: { x: "105%" }
-  }
-};
+export const Context = createContext({});
 
 export default function Provider({ modals, children }) {
   const ref = useRef();
@@ -22,12 +11,14 @@ export default function Provider({ modals, children }) {
   const [modal, setModal] = useState(null);
   const [previousModal, setPreviousModal] = useState(null);
   const [modalEffect, setModalEffect] = useState(null);
-  const [props, setProps] = useState({});
+  const [modalProps, setModalProps] = useState({});
   const [disabled, setDisable] = useState();
   const [shouldFade, setShouldFade] = useState(true);
   const [modalTimeout, setModalTimeout] = useState(0);
   const [hasNoOverlay, setHasNoOverlay] = useState(false);
   const [modalScroll, setModalScroll] = useState(false);
+  const [duration, setDuration] = useState(false);
+  const [isSpring, setIsSpring] = useState(false);
 
   const modalControls = useAnimation();
   const openModal = useCallback(
@@ -39,16 +30,20 @@ export default function Provider({ modals, children }) {
         effect = effects.POP_UP,
         noOverlay = false,
         scroll = false,
-        ...data
+        speed = 0.4,
+        spring = false,
+        data = {}
       } = {}
     ) => {
       setShouldFade(fade);
       setModalTimeout(timeout);
-      setProps(data);
+      setModalProps(data);
       setModal(content);
       setModalEffect(effect);
       setHasNoOverlay(noOverlay);
       setModalScroll(scroll);
+      setDuration(speed);
+      setIsSpring(spring);
     },
     []
   );
@@ -59,7 +54,7 @@ export default function Provider({ modals, children }) {
   }, []);
 
   const disable = () => setDisable(true);
-  const updateProps = data => setProps(data);
+  const updateProps = data => setModalProps(data);
   const clearModalTimeout = () => setModalTimeout(0);
 
   return (
@@ -75,7 +70,7 @@ export default function Provider({ modals, children }) {
           setPreviousModal,
           ref,
           disabled,
-          props,
+          modalProps,
           disable,
           updateProps,
           shouldFade,
@@ -84,7 +79,9 @@ export default function Provider({ modals, children }) {
           hasNoOverlay,
           modalControls,
           modalEffect,
-          modalScroll
+          modalScroll,
+          duration,
+          isSpring
         }
       }}
     >
