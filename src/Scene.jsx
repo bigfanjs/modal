@@ -9,6 +9,7 @@ import React, {
 import { motion, useAnimation } from "framer-motion";
 import useActionInsideOut, { types } from "./useActionInsideOut";
 import { Context } from "./Provider";
+import * as effects from "./effects"
 
 const overlayDefaultStyles = {
   position: "fixed",
@@ -20,7 +21,8 @@ const overlayDefaultStyles = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  backgroundColor: "rgba(0, 0, 0, 0.79)"
+  backgroundColor: "rgba(0, 0, 0, 0.79)",
+  willChange: "opacity",
 };
 const springConfigs = { type: "spring", stiffness: 90, damping: 13 };
 
@@ -54,19 +56,19 @@ export default function Scene({ modals }) {
     if (timer) clearTimeout(timer);
   }, [closeModal, clearModalTimeout, timer]);
 
-  const transition = useMemo(() => ({ duration }), [duration]);
-
   const handleModalEnter = useCallback(() => {
-    if (!hasNoOverlay) controls.start("enter", transition);
+    // overlay:
+    if (!hasNoOverlay) controls.start("enter", { duration: duration.enter });
+
+    // modal:
     modalControls.start("enter", {
-      ...transition,
-      ...(isSpring ? springConfigs : {})
+      ...(isSpring ? springConfigs : { duration: duration.enter })
     });
-  }, [hasNoOverlay, modalControls, controls, transition, isSpring]);
+  }, [hasNoOverlay, modalControls, controls, isSpring, duration.enter]);
 
   const handleModalExit = useCallback(async () => {
-    if (!hasNoOverlay) controls.start("exit", transition);
-    await modalControls.start("exit", transition);
+    if (!hasNoOverlay) controls.start("exit", { duration: duration.exit });
+    await modalControls.start("exit", { duration: duration.exit });
     setPreviousModal(null);
     if (modalTimeout) handleCleanUps();
   }, [
@@ -76,7 +78,7 @@ export default function Scene({ modals }) {
     modalTimeout,
     handleCleanUps,
     setPreviousModal,
-    transition
+    duration.exit
   ]);
 
   const handleTimeout = useCallback(
@@ -117,8 +119,7 @@ export default function Scene({ modals }) {
   }, [modal, modalScroll, previousModal]);
 
   const Modal = modals[previousModal];
-  const overlayVariants =
-    modalEffect && modalEffect.overlay ? modalEffect.overlay : modalEffect;
+  const overlayVariants = effects.FADE
 
   return (
     previousModal && (

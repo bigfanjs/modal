@@ -39,9 +39,8 @@
     "prettier": "^2.0.2"
   },
   "dependencies": {
-    "framer-motion": "^1.10.3",
+    "framer-motion": "^2.6.12",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-motion": "^0.5.2"
+    "react-dom": "^16.13.1"
   }
 }

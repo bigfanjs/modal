@@ -17,7 +17,7 @@ export default function Provider({ modals, children }) {
   const [modalTimeout, setModalTimeout] = useState(0);
   const [hasNoOverlay, setHasNoOverlay] = useState(false);
   const [modalScroll, setModalScroll] = useState(false);
-  const [duration, setDuration] = useState(false);
+  const [duration, setDuration] = useState({ enter: 0, exit: 0 });
   const [isSpring, setIsSpring] = useState(false);
 
   const modalControls = useAnimation();
@@ -30,7 +30,9 @@ export default function Provider({ modals, children }) {
         effect = effects.POP_UP,
         noOverlay = false,
         scroll = false,
-        speed = 0.4,
+        speed = 0,
+        openSpeed = 0,
+        closeSpeed = 0,
         spring = false,
         data = {}
       } = {}
@@ -42,7 +44,10 @@ export default function Provider({ modals, children }) {
       setModalEffect(effect);
       setHasNoOverlay(noOverlay);
       setModalScroll(scroll);
-      setDuration(speed);
+      setDuration({
+        enter: openSpeed || speed || effect?.enter?.transition?.duration,
+        exit: closeSpeed || speed || effect?.exit?.transition?.duration,
+      });
       setIsSpring(spring);
     },
     []
