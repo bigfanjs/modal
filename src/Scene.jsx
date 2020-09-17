@@ -4,12 +4,11 @@ import React, {
   useEffect,
   useRef,
   useCallback,
-  useMemo
 } from "react";
 import { motion, useAnimation } from "framer-motion";
 import useActionInsideOut, { types } from "./useActionInsideOut";
 import { Context } from "./Provider";
-import * as effects from "./effects"
+import * as effects from "./effects";
 
 const overlayDefaultStyles = {
   position: "fixed",
@@ -22,7 +21,6 @@ const overlayDefaultStyles = {
   justifyContent: "center",
   alignItems: "center",
   backgroundColor: "rgba(0, 0, 0, 0.79)",
-  willChange: "opacity",
 };
 const springConfigs = { type: "spring", stiffness: 90, damping: 13 };
 
@@ -42,8 +40,8 @@ export default function Scene({ modals }) {
       duration,
       isSpring,
       modalProps,
-      modalEffect
-    }
+      modalEffect,
+    },
   } = useContext(Context);
 
   const isMounted = useRef(false);
@@ -62,7 +60,7 @@ export default function Scene({ modals }) {
 
     // modal:
     modalControls.start("enter", {
-      ...(isSpring ? springConfigs : { duration: duration.enter })
+      ...(isSpring ? springConfigs : { duration: duration.enter }),
     });
   }, [hasNoOverlay, modalControls, controls, isSpring, duration.enter]);
 
@@ -78,7 +76,7 @@ export default function Scene({ modals }) {
     modalTimeout,
     handleCleanUps,
     setPreviousModal,
-    duration.exit
+    duration.exit,
   ]);
 
   const handleTimeout = useCallback(
@@ -88,7 +86,7 @@ export default function Scene({ modals }) {
   const isMouseOut = useActionInsideOut({
     element: ref,
     event: types.MOVE,
-    disable: !previousModal || !modalTimeout
+    disable: !previousModal || !modalTimeout,
   });
 
   useEffect(() => {
@@ -119,17 +117,16 @@ export default function Scene({ modals }) {
   }, [modal, modalScroll, previousModal]);
 
   const Modal = modals[previousModal];
-  const overlayVariants = effects.FADE
 
   return (
     previousModal && (
       <motion.div
         animate={!hasNoOverlay && controls}
         initial={!hasNoOverlay && "initial"}
-        variants={overlayVariants}
+        variants={effects.FADE}
         style={{
           ...overlayDefaultStyles,
-          ...(hasNoOverlay ? { backgroundColor: "transparent" } : {})
+          ...(hasNoOverlay ? { backgroundColor: "transparent" } : {}),
         }}
         onClick={closeModal}
         className="overlay"

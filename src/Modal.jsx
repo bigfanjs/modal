@@ -6,13 +6,12 @@ import { Context } from "./Provider";
 const defaultStyles = {
   position: "relative",
   transformOrigin: "center center",
-  willChange: "transform",
-  pointerEvents: "auto"
+  pointerEvents: "auto",
 };
 
 export default function Modal({ children, className, style }) {
   const {
-    sys: { ref, modalControls, modalEffect }
+    sys: { ref, modalControls, modalEffect },
   } = useContext(Context);
 
   const modalVariants =
@@ -24,8 +23,8 @@ export default function Modal({ children, className, style }) {
       initial="initial"
       variants={modalVariants}
       animate={modalControls}
-      onClick={e => e.stopPropagation()}
-      className={className}
+      onClick={(e) => e.stopPropagation()}
+      className={`modal${className ? ` ${className}` : ""}`}
       style={{ ...defaultStyles, ...style }}
     >
       {children}
