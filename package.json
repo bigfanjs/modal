@@ -6,6 +6,10 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:bigfanjs/modal.git"
+  },
   "scripts": {
     "clean-dist": "rm -rf dist",
     "build": "npm run clean-dist && npx babel src --out-dir dist && npm run copypackage",
