@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "an animated react modal",
   "main": "index.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
     "clean-dist": "rm -rf dist",
     "build": "npm run clean-dist && npx babel src --out-dir dist && npm run copypackage",
