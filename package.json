@@ -1,5 +1,5 @@
 {
-  "name": "Modalik",
+  "name": "@bigfan/modal",
   "version": "1.0.0",
   "description": "an animated react modal",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "build": "npm run clean-dist && npx babel src --out-dir dist && npm run copypackage",
     "watch": "npm run build && npx babel src --out-dir dist --watch",
     "clean": "rm -rf node_modules/ package-lock.json yarn-error.log yarn.lock dist",
-    "copypackage": "cp -rf package.json dist",
+    "copypackage": "cp -rf package.json README.md dist",
     "dist": "cd dist && npm publish"
   },
   "keywords": [
