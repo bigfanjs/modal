@@ -5,7 +5,7 @@ import * as effects from "./effects";
 
 export const Context = createContext({});
 
-export default function Provider({ modals, children }) {
+export default function Provider({ types, children }) {
   const ref = useRef();
 
   const [modal, setModal] = useState(null);
@@ -17,8 +17,8 @@ export default function Provider({ modals, children }) {
   const [modalTimeout, setModalTimeout] = useState(0);
   const [hasNoOverlay, setHasNoOverlay] = useState(false);
   const [modalScroll, setModalScroll] = useState(false);
-  const [duration, setDuration] = useState({ enter: 0, exit: 0 });
   const [isSpring, setIsSpring] = useState(false);
+  const [transition, setTransition] = useState({ enter: null, exit: null });
 
   const modalControls = useAnimation();
   const openModal = useCallback(
@@ -34,9 +34,12 @@ export default function Provider({ modals, children }) {
         openSpeed = 0,
         closeSpeed = 0,
         spring = false,
-        data = {}
+        data = {},
       } = {}
     ) => {
+      const enterDuration = openSpeed || speed;
+      const exitDuration = closeSpeed || speed;
+
       setShouldFade(fade);
       setModalTimeout(timeout);
       setModalProps(data);
@@ -44,9 +47,15 @@ export default function Provider({ modals, children }) {
       setModalEffect(effect);
       setHasNoOverlay(noOverlay);
       setModalScroll(scroll);
-      setDuration({
-        enter: openSpeed || speed || effect?.enter?.transition?.duration,
-        exit: closeSpeed || speed || effect?.exit?.transition?.duration,
+      setTransition({
+        enter: {
+          ...effect.enter.transition,
+          ...(enterDuration ? { duration: enterDuration } : {}),
+        },
+        exit: {
+          ...effect.exit.transition,
+          ...(exitDuration ? { duration: exitDuration } : {}),
+        },
       });
       setIsSpring(spring);
     },
@@ -59,13 +68,13 @@ export default function Provider({ modals, children }) {
   }, []);
 
   const disable = () => setDisable(true);
-  const updateProps = data => setModalProps(data);
+  const updateProps = (data) => setModalProps(data);
   const clearModalTimeout = () => setModalTimeout(0);
 
   return (
     <Context.Provider
       value={{
-        modals,
+        types,
         openModal,
         closeModal,
         effects,
@@ -85,9 +94,9 @@ export default function Provider({ modals, children }) {
           modalControls,
           modalEffect,
           modalScroll,
-          duration,
-          isSpring
-        }
+          transition,
+          isSpring,
+        },
       }}
     >
       {children}

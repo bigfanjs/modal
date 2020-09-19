@@ -37,10 +37,9 @@ export default function Scene({ modals }) {
       modalTimeout,
       clearModalTimeout,
       ref,
-      duration,
+      transition,
       isSpring,
       modalProps,
-      modalEffect,
     },
   } = useContext(Context);
 
@@ -56,17 +55,20 @@ export default function Scene({ modals }) {
 
   const handleModalEnter = useCallback(() => {
     // overlay:
-    if (!hasNoOverlay) controls.start("enter", { duration: duration.enter });
+    if (!hasNoOverlay) controls.start("enter", transition.enter);
 
     // modal:
     modalControls.start("enter", {
-      ...(isSpring ? springConfigs : { duration: duration.enter }),
+      ...(isSpring ? springConfigs : transition.enter),
     });
-  }, [hasNoOverlay, modalControls, controls, isSpring, duration.enter]);
+  }, [hasNoOverlay, modalControls, controls, isSpring, transition.enter]);
 
   const handleModalExit = useCallback(async () => {
-    if (!hasNoOverlay) controls.start("exit", { duration: duration.exit });
-    await modalControls.start("exit", { duration: duration.exit });
+    // overlay:
+    if (!hasNoOverlay) controls.start("exit", transition.exit);
+
+    // modal:
+    await modalControls.start("exit", transition.exit);
     setPreviousModal(null);
     if (modalTimeout) handleCleanUps();
   }, [
@@ -76,7 +78,7 @@ export default function Scene({ modals }) {
     modalTimeout,
     handleCleanUps,
     setPreviousModal,
-    duration.exit,
+    transition.exit,
   ]);
 
   const handleTimeout = useCallback(
