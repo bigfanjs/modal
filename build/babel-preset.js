@@ -24,7 +24,11 @@ module.exports = function () {
     presets: [
       [
         "@babel/preset-env",
-        { loose: true, modules: building ? false : "commonjs" },
+        {
+          useBuiltIns: "usage",
+          loose: true,
+          modules: building ? false : "commonjs",
+        },
       ],
       "@babel/preset-react",
     ],
