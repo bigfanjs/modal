@@ -1,6 +1,4 @@
-Put all your modals in one place and prevent polluting the DOM with excessive nodes.
-
-Website: bigfanjs.github.io/modal-docs/
+use [bigfan modal](bigfanjs.github.io/modal-docs/) to put all your modals in one place and prevent polluting the DOM with excessive nodes.
 
 ## Installation
 
