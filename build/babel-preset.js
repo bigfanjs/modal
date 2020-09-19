@@ -1,6 +1,11 @@
 const BABEL_ENV = process.env.BABEL_ENV;
 const building = BABEL_ENV != undefined && BABEL_ENV !== "cjs";
 
+const plugins = [
+  "@babel/plugin-proposal-class-properties",
+  "@babel/plugin-proposal-object-rest-spread",
+];
+
 module.exports = function () {
   return {
     presets: [
@@ -10,5 +15,6 @@ module.exports = function () {
       ],
       "@babel/preset-react",
     ],
+    plugins: plugins,
   };
 };
