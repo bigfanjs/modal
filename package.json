@@ -1,6 +1,6 @@
 {
   "name": "@bigfan/modal",
-  "version": "1.4.1",
+  "version": "1.5.1",
   "description": "an animated react modal",
   "main": "index.js",
   "module": "es/index.js",
@@ -52,6 +52,7 @@
     "watch-cli": "^0.2.3"
   },
   "dependencies": {
+    "@bigfan/modal": "1.4.1",
     "framer-motion": "^2.6.12",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
