@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "an animated react modal",
   "main": "index.js",
+  "module": "es/index.js",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
@@ -12,11 +13,10 @@
   },
   "scripts": {
     "clean-dist": "rm -rf dist",
-    "build": "npm run clean-dist && npx babel src --out-dir dist && npm run copypackage",
-    "watch": "npm run build && npx babel src --out-dir dist --watch",
+    "build": "node build/build.js && npm run copypackage",
+    "watch": "watch -p \"src/**/*.js\" -c \"yarn build\"",
     "clean": "rm -rf node_modules/ package-lock.json yarn-error.log yarn.lock dist",
-    "copypackage": "cp -rf package.json README.md dist",
-    "dist": "cd dist && npm publish"
+    "copypackage": "cp -rf package.json README.md dist"
   },
   "keywords": [
     "react",
@@ -43,7 +43,8 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^3.0.0",
-    "prettier": "^2.0.2"
+    "prettier": "^2.0.2",
+    "watch-cli": "^0.2.3"
   },
   "dependencies": {
     "framer-motion": "^2.6.12",
